@@ -1,0 +1,84 @@
+App\Entity\Location:
+    properties:
+        city:
+            - NotBlank:
+                  groups: ["create", "edit"]
+                  message: "Miasto nie może być puste."
+            - Length:
+                  min: 2
+                  max: 50
+                  groups: ["create", "edit"]
+                  minMessage: "Nazwa miasta musi mieć co najmniej {{ limit }} znaki."
+                  maxMessage: "Nazwa miasta może mieć maksymalnie {{ limit }} znaków."
+
+        country:
+            - NotBlank:
+                  groups: ["create", "edit"]
+                  message: "Wybierz kraj."
+            - Regex:
+                  pattern: "/^[A-Z]{2}$/"
+                  message: "Kod kraju musi składać się z dwóch wielkich liter (np. PL, DE, DK)."
+                  groups: ["create", "edit"]
+
+        latitude:
+            - NotBlank:
+                  groups: ["create", "edit"]
+                  message: "Szerokość geograficzna jest wymagana."
+            - Regex:
+                  pattern: "/^-?\\d{1,2}(\\.\\d{1,7})?$/"
+                  message: "Nieprawidłowy format szerokości — dozwolone maks. 2 cyfry przed i 7 po przecinku (np. 52.2296756)."
+                  groups: ["create", "edit"]
+            - Range:
+                  min: -90
+                  max: 90
+                  groups: ["create", "edit"]
+                  notInRangeMessage: "Szerokość geograficzna musi być między -90 a 90."
+
+        longitude:
+            - NotBlank:
+                  groups: ["create", "edit"]
+                  message: "Długość geograficzna jest wymagana."
+            - Regex:
+                  pattern: "/^-?\\d{1,3}(\\.\\d{1,7})?$/"
+                  message: "Nieprawidłowy format długości — dozwolone maks. 3 cyfry przed i 7 po przecinku (np. 21.0122287)."
+                  groups: ["create", "edit"]
+            - Range:
+                  min: -180
+                  max: 180
+                  groups: ["create", "edit"]
+                  notInRangeMessage: "Długość geograficzna musi być między -180 a 180."
+
+App\Entity\Measurement:
+    properties:
+        location:
+            - NotNull:
+                  groups: ["create", "edit"]
+                  message: "Musisz wybrać lokalizację, do której należy pomiar."
+            - Valid: ~
+
+        date:
+            - NotBlank:
+                  groups: ["create", "edit"]
+                  message: "Data nie może być pusta."
+            - Type:
+                  type: \DateTimeInterface
+                  groups: ["create", "edit"]
+                  message: "Nieprawidłowy format daty."
+            - GreaterThanOrEqual:
+                  value: today
+                  groups: ["create", "edit"]
+                  message: "Data pomiaru nie może być z przeszłości."
+
+        celsius:
+            - NotBlank:
+                  groups: ["create", "edit"]
+                  message: "Temperatura jest wymagana."
+            - Regex:
+                  pattern: "/^-?\\d{1,3}(\\.\\d)?$/"
+                  groups: ["create", "edit"]
+                  message: "Temperatura powinna być liczbą z maksymalnie jedną cyfrą po przecinku."
+            - Range:
+                  min: -100
+                  max: 100
+                  groups: ["create", "edit"]
+                  notInRangeMessage: "Temperatura powinna być między -100 a 100°C."
